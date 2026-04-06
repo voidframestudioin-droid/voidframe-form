@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoidFrame Studio — Editor Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D0D1A;
+    --card: #161625;
+    --dark2: #1A1A2E;
+    --accent: #E94560;
+    --accent2: #ff6b6b;
+    --white: #FFFFFF;
+    --light: #CCCCDD;
+    --muted: #888899;
+    --border: #2A2A3E;
+    --green: #2ECC71;
+    --blue: #4A90E2;
+    --gold: #F39C12;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* HERO HEADER */
+  .hero {
+    background: linear-gradient(135deg, #0D0D1A 0%, #1A0A12 50%, #0D0D1A 100%);
+    padding: 40px 20px 30px;
+    text-align: center;
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(233,69,96,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .studio-name {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 52px;
+    letter-spacing: 4px;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 0%, #E94560 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .studio-sub {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .form-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 50px;
+    margin-top: 16px;
+  }
+
+  .hero-desc {
+    font-size: 13px;
+    color: var(--light);
+    margin-top: 12px;
+    line-height: 1.6;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* MAIN FORM */
+  .form-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-top: 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 2px;
+  }
+
+  .section-header.accent { background: var(--accent); }
+  .section-header.blue { background: var(--blue); }
+  .section-header.green { background: var(--green); }
+  .section-header.gold { background: var(--gold); }
+
+  .section-num {
+    width: 24px;
+    height: 24px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .section-body {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* FORM ELEMENTS */
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--light);
+    letter-spacing: 0.5px;
+  }
+
+  label .req {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="date"],
+  input[type="url"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(233,69,96,0.15);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--border);
+    font-size: 12px;
+  }
+
+  select option { background: var(--dark2); }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+
+  /* CHECKBOX GRID */
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .checkbox-grid.three-col {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 10px;
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .checkbox-item:hover {
+    border-color: var(--accent);
+    background: rgba(233,69,96,0.05);
+  }
+
+  .checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .checkbox-item input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .checkbox-item span {
+    font-size: 12px;
+    color: var(--light);
+    font-weight: 500;
+  }
+
+  .checkbox-item.selected {
+    border-color: var(--accent);
+    background: rgba(233,69,96,0.1);
+  }
+
+  /* SKILL LEVEL CARDS */
+  .skill-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .skill-card {
+    padding: 12px;
+    background: var(--dark2);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .skill-card:hover {
+    border-color: var(--accent);
+  }
+
+  .skill-card input[type="radio"] {
+    display: none;
+  }
+
+  .skill-card.selected {
+    border-color: var(--accent);
+    background: rgba(233,69,96,0.1);
+  }
+
+  .skill-card .level-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+  }
+
+  .skill-card .level-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    display: block;
+  }
+
+  /* AGREEMENT */
+  .agreement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .agreement-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--blue);
+    flex-shrink: 0;
+    margin-top: 2px;
+    cursor: pointer;
+  }
+
+  .agreement-item span {
+    font-size: 12px;
+    color: var(--light);
+    line-height: 1.5;
+  }
+
+  /* SUBMIT BUTTON */
+  .submit-section {
+    margin-top: 28px;
+    padding: 0 0 20px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(233,69,96,0.4);
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 25px rgba(233,69,96,0.5);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .submit-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* SUCCESS MESSAGE */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 30px 20px;
+    background: var(--card);
+    border: 1px solid var(--green);
+    border-radius: 12px;
+    margin-top: 20px;
+  }
+
+  .success-msg .check {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .success-msg h3 {
+    font-size: 20px;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .success-msg p {
+    font-size: 13px;
+    color: var(--light);
+    line-height: 1.6;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  /* HELPER TEXT */
+  .helper {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: -8px;
+  }
+
+  /* CONTACT FOOTER */
+  .contact-footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--border);
+    padding: 16px;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .contact-footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    margin-bottom: 20px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--blue));
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="studio-name">VOIDFRAME</div>
+  <div class="studio-name" style="background: linear-gradient(135deg, #E94560, #ff9f43); -webkit-background-clip: text; background-clip: text;">STUDIO</div>
+  <div class="studio-sub">Haridwar, Uttarakhand — Est. 2026</div>
+  <div class="form-badge">Editor Application Form</div>
+  <p class="hero-desc">Apply to join the VoidFrame editing team. Fill this form completely — we review every application personally.</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<!-- FORM -->
+<div class="form-container">
+  <form id="editorForm" onsubmit="handleSubmit(event)">
+
+    <!-- SECTION 1: PERSONAL INFO -->
+    <div class="section">
+      <div class="section-header accent">
+        <div class="section-num">1</div>
+        <div class="section-title">Personal Information</div>
+      </div>
+      <div class="section-body">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" name="fullName" placeholder="Your full name" required>
+          </div>
+          <div class="field-group">
+            <label>Age <span class="req">*</span></label>
+            <input type="text" name="age" placeholder="Your age">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>WhatsApp Number <span class="req">*</span></label>
+          <input type="tel" name="whatsapp" placeholder="+91 XXXXXXXXXX" required>
+        </div>
+
+        <div class="field-group">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="your@email.com">
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>City / Area <span class="req">*</span></label>
+            <input type="text" name="city" placeholder="e.g. Haridwar" required>
+          </div>
+          <div class="field-group">
+            <label>In School/College?</label>
+            <select name="student">
+              <option value="">Select</option>
+              <option>Yes — School</option>
+              <option>Yes — College</option>
+              <option>No — Working</option>
+              <option>No — Freelancing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Instagram Profile</label>
+          <input type="url" name="instagram" placeholder="instagram.com/yourprofile">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: EDITING SKILLS -->
+    <div class="section">
+      <div class="section-header blue">
+        <div class="section-num">2</div>
+        <div class="section-title">Editing Skills & Experience</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field-group">
+          <label>Software You Know <span class="req">*</span></label>
+          <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="checkbox" name="software" value="CapCut"><span>CapCut</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="software" value="VN Editor"><span>VN Editor</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="software" value="Adobe Premiere"><span>Adobe Premiere</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="software" value="DaVinci Resolve"><span>DaVinci Resolve</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="software" value="After Effects"><span>After Effects</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="software" value="Final Cut Pro"><span>Final Cut Pro</span></label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Experience Level <span class="req">*</span></label>
+          <div class="skill-cards" id="skillCards">
+            <div class="skill-card" onclick="selectSkill(this, 'Beginner')">
+              <input type="radio" name="experience" value="Beginner">
+              <span class="level-name">Beginner</span>
+              <span class="level-desc">0–6 months</span>
+            </div>
+            <div class="skill-card" onclick="selectSkill(this, 'Intermediate')">
+              <input type="radio" name="experience" value="Intermediate">
+              <span class="level-name">Intermediate</span>
+              <span class="level-desc">6 months–2 years</span>
+            </div>
+            <div class="skill-card" onclick="selectSkill(this, 'Advanced')">
+              <input type="radio" name="experience" value="Advanced">
+              <span class="level-name">Advanced</span>
+              <span class="level-desc">2–4 years</span>
+            </div>
+            <div class="skill-card" onclick="selectSkill(this, 'Professional')">
+              <input type="radio" name="experience" value="Professional">
+              <span class="level-name">Professional</span>
+              <span class="level-desc">4+ years</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Types of Editing You Can Do</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="checkbox" name="editType" value="Short Reels"><span>Short Reels</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="editType" value="Long Promos"><span>Long Promos</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="editType" value="YouTube Videos"><span>YouTube Videos</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="editType" value="Color Grading"><span>Color Grading</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="editType" value="Motion Graphics"><span>Motion Graphics</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="editType" value="Thumbnails"><span>Thumbnails</span></label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Portfolio Link <span class="req">*</span></label>
+          <input type="url" name="portfolio" placeholder="Drive / YouTube / Instagram link" required>
+          <p class="helper">Share your best editing work</p>
+        </div>
+
+        <div class="field-group">
+          <label>PC / Laptop Specs</label>
+          <div class="field-row">
+            <input type="text" name="processor" placeholder="Processor (e.g. i3, Ryzen 5)">
+            <input type="text" name="ram" placeholder="RAM (e.g. 8GB)">
+          </div>
+          <input type="text" name="gpu" placeholder="GPU if any (e.g. GTX 1650 / None)" style="margin-top:8px">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 3: AVAILABILITY -->
+    <div class="section">
+      <div class="section-header green">
+        <div class="section-num">3</div>
+        <div class="section-title">Availability & Work Style</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field-group">
+          <label>Hours Available Per Day <span class="req">*</span></label>
+          <div class="checkbox-grid three-col">
+            <label class="checkbox-item"><input type="radio" name="hours" value="1-2 hrs"><span>1–2 hrs</span></label>
+            <label class="checkbox-item"><input type="radio" name="hours" value="2-3 hrs"><span>2–3 hrs</span></label>
+            <label class="checkbox-item"><input type="radio" name="hours" value="3-4 hrs"><span>3–4 hrs</span></label>
+            <label class="checkbox-item"><input type="radio" name="hours" value="4-5 hrs"><span>4–5 hrs</span></label>
+            <label class="checkbox-item"><input type="radio" name="hours" value="5+ hrs"><span>5+ hrs</span></label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>60-Second Reel Delivery Time</label>
+          <select name="delivery">
+            <option value="">Select turnaround time</option>
+            <option>12 hours</option>
+            <option>24 hours</option>
+            <option>48 hours</option>
+            <option>3 days</option>
+            <option>Depends on complexity</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Preferred Communication</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="radio" name="comm" value="WhatsApp Text"><span>WhatsApp Text</span></label>
+            <label class="checkbox-item"><input type="radio" name="comm" value="WhatsApp Voice"><span>WhatsApp Voice</span></label>
+            <label class="checkbox-item"><input type="radio" name="comm" value="Direct Call"><span>Direct Call</span></label>
+            <label class="checkbox-item"><input type="radio" name="comm" value="Any Method"><span>Any Method</span></label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 4: GOALS -->
+    <div class="section">
+      <div class="section-header accent">
+        <div class="section-num">4</div>
+        <div class="section-title">Goals & Why VoidFrame</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field-group">
+          <label>Why do you want to join VoidFrame Studio? <span class="req">*</span></label>
+          <textarea name="whyJoin" placeholder="Be honest. What excites you about this?" required></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>What unique skill do you bring? <span class="req">*</span></label>
+          <textarea name="uniqueSkill" placeholder="What makes you different from other editors?" required></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>Where do you see yourself in 1 year?</label>
+          <textarea name="goals" placeholder="Your personal and professional goals..."></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 5: AGREEMENT -->
+    <div class="section">
+      <div class="section-header blue">
+        <div class="section-num">5</div>
+        <div class="section-title">Agreement & Declaration</div>
+      </div>
+      <div class="section-body">
+        <div class="agreement-item">
+          <input type="checkbox" id="a1" required>
+          <span>All information I provided is true and accurate.</span>
+        </div>
+        <div class="agreement-item">
+          <input type="checkbox" id="a2" required>
+          <span>I understand VoidFrame follows a profit-sharing model — 55% Editor, 30% CEO, 15% Studio Fund.</span>
+        </div>
+        <div class="agreement-item">
+          <input type="checkbox" id="a3" required>
+          <span>I agree to maintain quality standards and deliver work on time.</span>
+        </div>
+        <div class="agreement-item">
+          <input type="checkbox" id="a4" required>
+          <span>I understand all client and project information is strictly confidential.</span>
+        </div>
+        <div class="agreement-item">
+          <input type="checkbox" id="a5" required>
+          <span>I agree to communicate openly and professionally with the VoidFrame team.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-section">
+      <button type="submit" class="submit-btn">Submit Application 🚀</button>
+      <p class="submit-note">After submitting, screenshot this page and send to<br><strong style="color:var(--accent)">+91 94107 68098</strong> on WhatsApp</p>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-msg" id="successMsg">
+      <span class="check">✅</span>
+      <h3>Application Submitted!</h3>
+      <p>Thank you for applying to VoidFrame Studio.<br>We will review your application and get back to you on WhatsApp within 24-48 hours.<br><br><strong style="color:var(--accent)">Please screenshot this page and send to +91 94107 68098</strong></p>
+    </div>
+
+  </form>
+</div>
+
+<!-- FOOTER -->
+<div class="contact-footer">
+  <strong style="color:var(--accent)">VOIDFRAME STUDIO</strong><br>
+  @voidframe.in &nbsp;|&nbsp; +91 94107 68098<br>
+  voidframestudio.in@gmail.com<br>
+  Haridwar, Uttarakhand, India
+</div>
+
+<script>
+  // Progress bar
+  function updateProgress() {
+    const inputs = document.querySelectorAll('input[required], textarea[required]');
+    let filled = 0;
+    inputs.forEach(input => {
+      if (input.type === 'checkbox') { if (input.checked) filled++; }
+      else if (input.value.trim()) filled++;
+    });
+    const pct = Math.min((filled / inputs.length) * 100, 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  document.addEventListener('input', updateProgress);
+  document.addEventListener('change', updateProgress);
+
+  // Skill card selection
+  function selectSkill(card, value) {
+    document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    card.querySelector('input[type="radio"]').checked = true;
+  }
+
+  // Checkbox styling
+  document.querySelectorAll('.checkbox-item input').forEach(input => {
+    input.addEventListener('change', function() {
+      if (this.type === 'radio') {
+        const name = this.name;
+        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+          r.closest('.checkbox-item')?.classList.remove('selected');
+        });
+      }
+      if (this.checked) this.closest('.checkbox-item')?.classList.add('selected');
+      else this.closest('.checkbox-item')?.classList.remove('selected');
+    });
+  });
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('editorForm');
+    const data = new FormData(form);
+
+    // Build WhatsApp message
+    let msg = "🎬 *NEW VOIDFRAME EDITOR APPLICATION*\n\n";
+    msg += `*Name:* ${data.get('fullName') || '-'}\n`;
+    msg += `*Age:* ${data.get('age') || '-'}\n`;
+    msg += `*WhatsApp:* ${data.get('whatsapp') || '-'}\n`;
+    msg += `*Email:* ${data.get('email') || '-'}\n`;
+    msg += `*City:* ${data.get('city') || '-'}\n`;
+    msg += `*Student:* ${data.get('student') || '-'}\n`;
+    msg += `*Instagram:* ${data.get('instagram') || '-'}\n\n`;
+    msg += `*Experience:* ${data.get('experience') || '-'}\n`;
+    msg += `*Hours/Day:* ${data.get('hours') || '-'}\n`;
+    msg += `*Delivery Time:* ${data.get('delivery') || '-'}\n`;
+    msg += `*Portfolio:* ${data.get('portfolio') || '-'}\n\n`;
+    msg += `*Why VoidFrame:* ${data.get('whyJoin') || '-'}\n\n`;
+    msg += `*Unique Skill:* ${data.get('uniqueSkill') || '-'}\n\n`;
+    msg += `*1 Year Goal:* ${data.get('goals') || '-'}\n\n`;
+    msg += `*PC:* ${data.get('processor') || '-'} | ${data.get('ram') || '-'} | GPU: ${data.get('gpu') || '-'}`;
+
+    const waLink = `https://wa.me/919410768098?text=${encodeURIComponent(msg)}`;
+
+    // Show success
+    document.getElementById('successMsg').style.display = 'block';
+    document.querySelector('.submit-section').style.display = 'none';
+    window.scrollTo({top: document.getElementById('successMsg').offsetTop - 20, behavior: 'smooth'});
+
+    // Open WhatsApp after 1 second
+    setTimeout(() => { window.open(waLink, '_blank'); }, 1000);
+  }
+</script>
+</body>
+</html>
